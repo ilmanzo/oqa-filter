@@ -2,5 +2,7 @@
 name = "oqa-filter"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+authors = ["Andrea Manzini <ilmanzo@gmail.com>"]
 
 [dependencies]
