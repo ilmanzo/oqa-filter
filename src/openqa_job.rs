@@ -1,3 +1,9 @@
+#![warn(
+    clippy::all,
+    clippy::pedantic,
+    clippy::nursery,
+)]
+
 use std::fmt;
 
 /// Represents `OpenQA` instance domains
@@ -43,16 +49,18 @@ impl OpenQAJob {
     }
 
     /// Returns true if this test is consecutive with another test
+    #[must_use]
     pub fn is_consecutive_with(&self, other: &Self) -> bool {
         self.domain == other.domain 
             && self.id + self.consecutive_count + 1 == other.id
     }
 }
 
-/// Handles different output format options for OpenQA jobs
+/// Handles different output format options for `OpenQA` jobs
 pub struct JobFormatter;
 
 impl JobFormatter {
+    #[must_use]
     pub fn all_same_domain(tests: &[OpenQAJob]) -> bool {
         if tests.is_empty() {
             return false;
@@ -61,6 +69,7 @@ impl JobFormatter {
         tests.iter().all(|test| test.domain == *first_domain)
     }
 
+    #[must_use]
     pub fn format_compact(jobs: &[OpenQAJob]) -> String {
         if jobs.is_empty() {
             return String::new();

@@ -1,3 +1,9 @@
+#![warn(
+    clippy::all,
+    clippy::pedantic,
+    clippy::nursery,
+)]
+
 mod openqa_job;
 pub use openqa_job::{JobFormatter, OpenQAJob};
 
