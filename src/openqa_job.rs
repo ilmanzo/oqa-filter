@@ -132,4 +132,37 @@ mod tests {
         assert!(job1.is_consecutive_with(&job2)); // true: same domain, sequential IDs
         assert!(!job1.is_consecutive_with(&job3)); // false: different domains
     }
+
+    #[test]
+    fn test_all_same_domain() {
+        let jobs = vec![
+            OpenQAJob {
+                domain: Domain::SUSE_DE,
+                id: 123,
+                consecutive_count: 0,
+            },
+            OpenQAJob {
+                domain: Domain::SUSE_DE,
+                id: 124,
+                consecutive_count: 0,
+            },
+        ];
+        
+        let mixed_jobs = vec![
+            OpenQAJob {
+                domain: Domain::SUSE_DE,
+                id: 123,
+                consecutive_count: 0,
+            },
+            OpenQAJob {
+                domain: Domain::OPENSUSE_ORG,
+                id: 124,
+                consecutive_count: 0,
+            },
+        ];
+
+        assert!(JobFormatter::all_same_domain(&jobs));
+        assert!(!JobFormatter::all_same_domain(&mixed_jobs));
+        assert!(!JobFormatter::all_same_domain(&[]));
+    }
 }
