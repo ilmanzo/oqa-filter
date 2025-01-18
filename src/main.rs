@@ -2,14 +2,21 @@
     clippy::all,
     clippy::pedantic,
     clippy::nursery,
-    clippy::cargo,
 )]
 
 use std::io::{self, BufRead, BufReader, Read, Write};
 use oqa_jobfilter::OpenQAJob;
 
+fn main() -> io::Result<()> {
+    process_input(io::stdin(), io::stdout())
+}
 
 /// Processes input lines and outputs aggregated `OpenQA` test URLs
+///
+/// # Errors
+///
+/// This function will return an error if there is an issue with reading from the input
+/// or writing to the output.
 pub fn process_input<R: Read, W: Write>(input: R, mut output: W) -> io::Result<()> {
     let mut tests: Vec<OpenQAJob> = BufReader::new(input)
         .lines()
@@ -46,8 +53,4 @@ pub fn process_input<R: Read, W: Write>(input: R, mut output: W) -> io::Result<(
     };
 
     writeln!(output, "openqa-mon {output_str}")
-}
-
-fn main() -> io::Result<()> {
-    process_input(io::stdin(), io::stdout())
 }

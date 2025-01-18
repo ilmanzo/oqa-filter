@@ -47,6 +47,23 @@ fn test_consecutive_ids() {
 }
 
 #[test]
+fn test_consecutive_ids_and_extra_remote() {
+    let input = Cursor::new(
+        "foo -> https://openqa.suse.de/tests/123\n\
+         bar -> https://openqa.suse.de/tests/124\n\
+         baz -> https://openqa.suse.de/tests/125\n\
+         qux -> https://openqa.opensuse.org/tests/456\n"
+    );
+    let mut output = Vec::new();
+    process_input(input, &mut output).unwrap();
+    assert_eq!(
+        String::from_utf8(output).unwrap(),
+        "openqa-mon https://openqa.suse.de/tests/123+2 https://openqa.opensuse.org/tests/456\n"
+    );
+}
+
+
+#[test]
 fn test_compact_output() {
     let input = Cursor::new(
         "test1 -> https://openqa.suse.de/tests/123\n\
