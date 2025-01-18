@@ -8,7 +8,7 @@ fn test_dedup() {
     process_input(input, &mut output).unwrap();
     assert_eq!(
         String::from_utf8(output).unwrap(),
-        "openqa-mon https://openqa.suse.de/tests/123 https://openqa.opensuse.org/tests/456\n"
+        "openqa-mon https://openqa.opensuse.org/tests/456 https://openqa.suse.de/tests/123\n"
     );
 }
 
@@ -26,7 +26,7 @@ fn test_noisy_input() {
          - sle-15-SP7-Online-x86_64-Build51.1-selinux@64bit -> https://openqa.opensuse.org/tests/16418919");
          let mut output = Vec::new();
          process_input(input, &mut output).unwrap();
-         let expected = "openqa-mon https://openqa.suse.de/tests/16418915 https://openqa.suse.de/tests/16418917 https://openqa.opensuse.org/tests/16418919\n";
+         let expected = "openqa-mon https://openqa.opensuse.org/tests/16418919 https://openqa.suse.de/tests/16418915 https://openqa.suse.de/tests/16418917\n";
          assert_eq!(String::from_utf8(output).unwrap(), expected);
         
 }
@@ -58,7 +58,7 @@ fn test_consecutive_ids_and_extra_remote() {
     process_input(input, &mut output).unwrap();
     assert_eq!(
         String::from_utf8(output).unwrap(),
-        "openqa-mon https://openqa.suse.de/tests/123+2 https://openqa.opensuse.org/tests/456\n"
+        "openqa-mon https://openqa.opensuse.org/tests/456 https://openqa.suse.de/tests/123+2\n"
     );
 }
 

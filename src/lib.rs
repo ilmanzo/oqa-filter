@@ -23,17 +23,7 @@ pub fn process_input<R: Read, W: Write>(input: R, mut output: W) -> io::Result<(
 
     jobs.sort();
     jobs.dedup();
-
-    // Aggregate consecutive tests
-    let mut i = 0;
-    while i < jobs.len().saturating_sub(1) {
-        if jobs[i].is_consecutive_with(&jobs[i + 1]) {
-            jobs[i].consecutive_count += 1;
-            jobs.remove(i + 1);
-        } else {
-            i += 1;
-        }
-    }
+    aggregate_consecutive_jobs(&mut jobs);
 
     let output_str = if OpenQAJob::all_same_domain(&jobs) {
         OpenQAJob::format_compact_output(&jobs)
@@ -45,4 +35,16 @@ pub fn process_input<R: Read, W: Write>(input: R, mut output: W) -> io::Result<(
     };
 
     writeln!(output, "openqa-mon {output_str}")
+}
+
+fn aggregate_consecutive_jobs(jobs: &mut Vec<OpenQAJob>) {
+    let mut i = 0;
+    while i < jobs.len().saturating_sub(1) {
+        if jobs[i].is_consecutive_with(&jobs[i + 1]) {
+            jobs[i].consecutive_count += 1;
+            jobs.remove(i + 1);
+        } else {
+            i += 1;
+        }
+    }
 }

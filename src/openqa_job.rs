@@ -1,23 +1,15 @@
 use std::fmt;
 
-/// OpenQA domain URLs
-const OPENQA_SUSE_URL: &str = "https://openqa.suse.de/tests/";
-const OPENQA_OPENSUSE_URL: &str = "https://openqa.opensuse.org/tests/";
-
 /// Represents `OpenQA` instance domains
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub enum Domain { // Make this public
-    SuseDe,
-    OpenSuseOrg,
-}
+pub struct Domain(&'static str);
 
 impl Domain {
-    /// Returns the base URL for the domain
+    pub const SUSE_DE: Self = Self("https://openqa.suse.de/tests/");
+    pub const OPENSUSE_ORG: Self = Self("https://openqa.opensuse.org/tests/");
+
     const fn base_url(&self) -> &'static str {
-        match self {
-            Self::SuseDe => OPENQA_SUSE_URL,
-            Self::OpenSuseOrg => OPENQA_OPENSUSE_URL,
-        }
+        self.0
     }
 }
 
@@ -33,20 +25,20 @@ impl OpenQAJob {
     /// Creates a new Job from a URL string
     pub fn from_url(url: &str) -> Option<Self> {
         let url = url.trim();
-        if let Some(id) = url.strip_prefix(OPENQA_SUSE_URL) {
-            Some(Self {
-                domain: Domain::SuseDe,
-                id: id.parse().ok()?,
-                consecutive_count: 0,
-            })
-        } else if let Some(id) = url.strip_prefix(OPENQA_OPENSUSE_URL) {
-            Some(Self {
-                domain: Domain::OpenSuseOrg,
-                id: id.parse().ok()?,
-                consecutive_count: 0,
-            })
+        if let Some(id) = url.strip_prefix(Domain::SUSE_DE.base_url()) {
+            Some(Self::new(Domain::SUSE_DE, id))
+        } else if let Some(id) = url.strip_prefix(Domain::OPENSUSE_ORG.base_url()) {
+            Some(Self::new(Domain::OPENSUSE_ORG, id))
         } else {
             None
+        }
+    }
+
+    fn new(domain: Domain, id: &str) -> Self {
+        Self {
+            domain,
+            id: id.parse().unwrap_or_default(),
+            consecutive_count: 0,
         }
     }
 
@@ -64,19 +56,19 @@ impl OpenQAJob {
         tests.iter().all(|test| test.domain == *first_domain)
     }
 
-    pub fn format_compact_output(tests: &[Self]) -> String {
-        if tests.is_empty() {
+    pub fn format_compact_output(jobs: &[Self]) -> String {
+        if jobs.is_empty() {
             return String::new();
         }
 
-        let has_consecutive = tests.iter().any(|t| t.consecutive_count > 0);
+        let has_consecutive = jobs.iter().any(|t| t.consecutive_count > 0);
         let base_url = if has_consecutive {
-            tests[0].domain.base_url()
+            jobs[0].domain.base_url()
         } else {
-            tests[0].domain.base_url().trim_end_matches("/tests/")
+            jobs[0].domain.base_url().trim_end_matches("/tests/")
         };
 
-        let ids: Vec<_> = tests.iter()
+        let ids: Vec<_> = jobs.iter()
             .map(|t| {
                 if t.consecutive_count > 0 {
                     format!("{}+{}", t.id, t.consecutive_count)
