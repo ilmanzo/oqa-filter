@@ -47,8 +47,13 @@ impl OpenQAJob {
         self.domain == other.domain 
             && self.id + self.consecutive_count + 1 == other.id
     }
+}
 
-    pub fn all_same_domain(tests: &[Self]) -> bool {
+/// Handles different output format options for OpenQA jobs
+pub struct JobFormatter;
+
+impl JobFormatter {
+    pub fn all_same_domain(tests: &[OpenQAJob]) -> bool {
         if tests.is_empty() {
             return false;
         }
@@ -56,7 +61,7 @@ impl OpenQAJob {
         tests.iter().all(|test| test.domain == *first_domain)
     }
 
-    pub fn format_compact_output(jobs: &[Self]) -> String {
+    pub fn format_compact(jobs: &[OpenQAJob]) -> String {
         if jobs.is_empty() {
             return String::new();
         }
@@ -99,5 +104,32 @@ impl fmt::Display for OpenQAJob {
                 String::new()
             }
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_consecutive_jobs() {
+        let job1 = OpenQAJob {
+            domain: Domain::SUSE_DE,
+            id: 123,
+            consecutive_count: 0,
+        };
+        let job2 = OpenQAJob {
+            domain: Domain::SUSE_DE,
+            id: 124,
+            consecutive_count: 0,
+        };
+        let job3 = OpenQAJob {
+            domain: Domain::OPENSUSE_ORG,
+            id: 124,
+            consecutive_count: 0,
+        };
+
+        assert!(job1.is_consecutive_with(&job2)); // true: same domain, sequential IDs
+        assert!(!job1.is_consecutive_with(&job3)); // false: different domains
     }
 }

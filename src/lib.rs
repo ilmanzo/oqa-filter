@@ -1,5 +1,5 @@
-pub mod openqa_job;
-pub use openqa_job::OpenQAJob;
+mod openqa_job;
+pub use openqa_job::{JobFormatter, OpenQAJob};
 
 use std::io::{self, BufRead, BufReader, Read, Write};
 
@@ -25,8 +25,8 @@ pub fn process_input<R: Read, W: Write>(input: R, mut output: W) -> io::Result<(
     jobs.dedup();
     aggregate_consecutive_jobs(&mut jobs);
 
-    let output_str = if OpenQAJob::all_same_domain(&jobs) {
-        OpenQAJob::format_compact_output(&jobs)
+    let output_str = if JobFormatter::all_same_domain(&jobs) {
+        JobFormatter::format_compact(&jobs)
     } else {
         jobs.iter()
             .map(ToString::to_string)
