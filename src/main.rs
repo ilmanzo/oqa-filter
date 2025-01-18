@@ -154,7 +154,7 @@ pub fn process_input<R: Read, W: Write>(input: R, mut output: W) -> io::Result<(
             .join(" ")
     };
 
-    writeln!(output, "openqa-mon {}", output_str)
+    writeln!(output, "openqa-mon {output_str}")
 }
 
 fn main() -> io::Result<()> {
