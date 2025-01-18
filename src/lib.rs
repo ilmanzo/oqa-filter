@@ -1,13 +1,7 @@
-#![warn(
-    clippy::all,
-    clippy::pedantic,
-    clippy::nursery,
-    clippy::cargo,
-)]
+pub mod openqa_job;
+pub use openqa_job::OpenQAJob;
 
 use std::io::{self, BufRead, BufReader, Read, Write};
-use oqa_jobfilter::OpenQAJob;
-
 
 /// Processes input lines and outputs aggregated `OpenQA` test URLs
 pub fn process_input<R: Read, W: Write>(input: R, mut output: W) -> io::Result<()> {
@@ -46,8 +40,4 @@ pub fn process_input<R: Read, W: Write>(input: R, mut output: W) -> io::Result<(
     };
 
     writeln!(output, "openqa-mon {output_str}")
-}
-
-fn main() -> io::Result<()> {
-    process_input(io::stdin(), io::stdout())
 }
