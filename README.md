@@ -7,14 +7,18 @@ A very small program that translates the output of `openqa-clone-job` to somethi
 - Rust toolchain (1.70 or newer)
 - Cargo (included with Rust)
 
-## Building
+## Building 
+
+```sh
+cargo build --release
+```
 
 ## Installation
 
 To install the OpenQA Job Filter, run the following command:
 
 ```sh
-cargo install openqa-job-filter
+cargo install 
 ```
 
 ## Usage
