@@ -18,7 +18,7 @@ cargo build --release
 To install the OpenQA Job Filter, run the following command:
 
 ```sh
-cargo install 
+cargo install --path .
 ```
 
 ## Usage
